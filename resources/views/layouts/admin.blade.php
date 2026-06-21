@@ -263,7 +263,7 @@
                 <i class="bi bi-bar-chart-line"></i> Reports
             </a>
 
-            <a href="#" class="nav-link">
+            <a href="{{ route('users.index') }}" class="nav-link">
                 <i class="bi bi-people"></i> Users Management
             </a>
 
