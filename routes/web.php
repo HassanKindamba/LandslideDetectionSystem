@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Api\SensorDataController;
 
 
 
@@ -31,5 +32,13 @@ Route::middleware(['auth'])->group(function(){
     Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 });
+    // sensor data routes
+    Route::get('/live', [SensorDataController::class, 'live'])->name('live.data');
+    Route::get('/live-data', [\App\Http\Controllers\Api\SensorDataController::class, 'liveFake']);
+
+    // alerts route
+  Route::get('/alerts', function () {
+    return view('admin.alerts.alerts');
+})->name('alerts');
 
 require __DIR__.'/auth.php';
