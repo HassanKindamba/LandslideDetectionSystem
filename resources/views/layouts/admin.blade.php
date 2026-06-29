@@ -251,12 +251,12 @@
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
 
-            <a href="#" class="nav-link">
+            <a href="{{ route('live.data') }}" class="nav-link">
                 <i class="bi bi-activity"></i> Live Sensor Data
             </a>
 
-            <a href="#" class="nav-link">
-                <i class="bi bi-exclamation-triangle"></i> Alerts
+            <a href="{{ route('alerts') }}" class="nav-link">
+                🚨 View Alerts
             </a>
 
             <a href="#" class="nav-link">
