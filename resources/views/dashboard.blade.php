@@ -5,227 +5,217 @@
 
 @section('styles')
 <style>
-    .stat-card {
-        border: none;
-        border-radius: 14px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
-        height: 100%;
-    }
 
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-    }
+/* ===== PAGE BACKGROUND ===== */
+body {
+    background: #f3f6fb;
+}
 
-    .stat-card .card-body {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding: 22px;
-    }
+/* ===== CENTER WRAPPER ===== */
+.dashboard-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 30px 15px;
+}
 
-    .stat-icon {
-        width: 55px;
-        height: 55px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        color: #fff;
-        flex-shrink: 0;
-    }
+/* ===== CARD ===== */
+.section-block {
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    padding: 30px;
+    width: 100%;
+    max-width: 1000px;
+    transition: all 0.3s ease;
+}
 
-    .icon-blue   { background: linear-gradient(135deg, #1565c0, #0d47a1); }
-    .icon-red    { background: linear-gradient(135deg, #e53935, #b71c1c); }
-    .icon-green  { background: linear-gradient(135deg, #43a047, #2e7d32); }
-    .icon-orange { background: linear-gradient(135deg, #fb8c00, #ef6c00); }
+.section-block:hover {
+    box-shadow: 0 12px 35px rgba(0,0,0,0.10);
+    transform: translateY(-2px);
+}
 
-    .stat-card h5 {
-        margin: 0;
-        font-weight: 700;
-        font-size: 1.4rem;
-        color: #1d2939;
-    }
+/* ===== TITLE ===== */
+.section-block h5 {
+    font-weight: 700;
+    color: #1d3557;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+}
 
-    .stat-card p.label {
-        margin: 0;
-        color: #6c757d;
-        font-size: 0.85rem;
-        font-weight: 500;
-    }
+.section-block p {
+    margin-bottom: 20px;
+}
 
-    .stat-card .desc {
-        margin: 0;
-        color: #98a2b3;
-        font-size: 0.78rem;
-    }
+/* ===== TABLE ===== */
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+}
 
-    .section-block {
-        background: #fff;
-        border-radius: 14px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-        padding: 22px;
-        margin-top: 25px;
-    }
+.table thead th {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #6c757d;
+    border: none;
+    padding: 12px;
+}
 
-    .section-block h5 {
-        color: var(--primary-blue);
-        font-weight: 700;
-        margin-bottom: 15px;
-    }
+.table tbody tr {
+    background: #f9fafb;
+    border-radius: 12px;
+    transition: 0.25s ease;
+}
 
-    .status-pill {
-        font-size: 0.75rem;
-        font-weight: 600;
-        padding: 4px 12px;
-        border-radius: 50px;
-    }
+.table tbody tr:hover {
+    background: #eef4ff;
+    transform: scale(1.01);
+}
 
-    .status-active {
-        background: rgba(67,160,71,0.12);
-        color: #2e7d32;
-    }
+.table td {
+    border: none !important;
+    padding: 14px 12px;
+    font-size: 14px;
+    color: #344054;
+}
 
-    .status-warning {
-        background: rgba(251,140,0,0.12);
-        color: #ef6c00;
-    }
+/* ===== STATUS ===== */
+.status-pill {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 50px;
+    display: inline-block;
+}
+
+.status-active {
+    background: rgba(67,160,71,0.12);
+    color: #2e7d32;
+}
+
+.status-warning {
+    background: rgba(251,140,0,0.12);
+    color: #ef6c00;
+}
+
+.status-danger {
+    background: rgba(211,47,47,0.12);
+    color: #c62828;
+}
+
 </style>
 @endsection
 
+
 @section('content')
 
-<!-- ===== STAT CARDS ===== -->
-<div class="row g-4">
+<div class="dashboard-wrapper">
 
-    <div class="col-md-3">
-        <div class="card stat-card">
-            <div class="card-body">
-                <div class="stat-icon icon-blue">
-                    <i class="bi bi-cpu"></i>
-                </div>
-                <div>
-                    <h5>{{ $totalSensors ?? '08' }}</h5>
-                    <p class="label">Active Sensors</p>
-                    <p class="desc">ESP32 nodes online</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="section-block">
 
-    <div class="col-md-3">
-        <div class="card stat-card">
-            <div class="card-body">
-                <div class="stat-icon icon-red">
-                    <i class="bi bi-exclamation-triangle"></i>
-                </div>
-                <div>
-                    <h5>{{ $totalAlerts ?? '03' }}</h5>
-                    <p class="label">Active Alerts</p>
-                    <p class="desc">Landslide risk warnings</p>
-                </div>
-            </div>
-        </div>
-    </div>
+        <h5>
+            <i class="bi bi-activity"></i>
+            Sensor Data
+        </h5>
 
-    <div class="col-md-3">
-        <div class="card stat-card">
-            <div class="card-body">
-                <div class="stat-icon icon-green">
-                    <i class="bi bi-file-earmark-bar-graph"></i>
-                </div>
-                <div>
-                    <h5>{{ $totalReports ?? '12' }}</h5>
-                    <p class="label">Reports Generated</p>
-                    <p class="desc">Monthly summaries</p>
-                </div>
-            </div>
-        </div>
-    </div>
+        <p class="text-muted small">
+            Live readings from Vibration, Soil Moisture, and Tilt sensors.
+        </p>
 
-    <div class="col-md-3">
-        <div class="card stat-card">
-            <div class="card-body">
-                <div class="stat-icon icon-orange">
-                    <i class="bi bi-people"></i>
-                </div>
-                <div>
-                    <h5>{{ $totalUsers ?? '25' }}</h5>
-                    <p class="label">Registered Users</p>
-                    <p class="desc">Mining site personnel</p>
-                </div>
-            </div>
-        </div>
+        <table class="table align-middle mb-0">
+
+            <thead>
+                <tr>
+                    <th>Sensor</th>
+                    <th>Location</th>
+                    <th>Reading</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>Vibration Sensor</td>
+                    <td>Zone A</td>
+                    <td id="vibration">--</td>
+                    <td><span id="vibStatus" class="status-pill">--</span></td>
+                </tr>
+
+                <tr>
+                    <td>Soil Moisture</td>
+                    <td>Zone B</td>
+                    <td id="soil">--</td>
+                    <td><span id="soilStatus" class="status-pill">--</span></td>
+                </tr>
+
+                <tr>
+                    <td>Tilt Sensor</td>
+                    <td>Zone C</td>
+                    <td id="tilt">--</td>
+                    <td><span id="tiltStatus" class="status-pill">--</span></td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
     </div>
 
 </div>
 
-<!-- ===== DETAIL SECTIONS ===== -->
-<div class="row mt-2">
+<script>
 
-    <div class="col-md-7">
-        <div class="section-block">
-            <h5><i class="bi bi-activity me-2"></i>Sensor Data</h5>
-            <p class="text-muted small mb-3">Live readings from Vibration, Soil Moisture, and Tilt sensors.</p>
+function getStatus(risk) {
+    if (risk === "HIGH") return "status-danger";
+    if (risk === "MEDIUM") return "status-warning";
+    return "status-active";
+}
 
-            <table class="table table-borderless align-middle mb-0">
-                <thead>
-                    <tr class="text-muted small text-uppercase">
-                        <th>Sensor</th>
-                        <th>Location</th>
-                        <th>Reading</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Vibration Sensor</td>
-                        <td>Zone A</td>
-                        <td>2.4 Hz</td>
-                        <td><span class="status-pill status-active">Normal</span></td>
-                    </tr>
-                    <tr>
-                        <td>Soil Moisture</td>
-                        <td>Zone B</td>
-                        <td>78%</td>
-                        <td><span class="status-pill status-warning">High</span></td>
-                    </tr>
-                    <tr>
-                        <td>Tilt Sensor</td>
-                        <td>Zone C</td>
-                        <td>1.2°</td>
-                        <td><span class="status-pill status-active">Normal</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+function getLabel(risk) {
+    if (risk === "HIGH") return "Danger";
+    if (risk === "MEDIUM") return "Warning";
+    return "Normal";
+}
 
-    <div class="col-md-5">
-        <div class="section-block">
-            <h5><i class="bi bi-exclamation-triangle me-2"></i>Recent Alerts</h5>
-            <p class="text-muted small mb-3">Latest landslide warnings detected.</p>
+async function loadDashboardData() {
 
-            <ul class="list-unstyled mb-0">
-                <li class="d-flex justify-content-between border-bottom py-2">
-                    <span>High soil moisture - Zone B</span>
-                    <span class="status-pill status-warning">2h ago</span>
-                </li>
-                <li class="d-flex justify-content-between border-bottom py-2">
-                    <span>Tilt threshold exceeded - Zone D</span>
-                    <span class="status-pill status-warning">5h ago</span>
-                </li>
-                <li class="d-flex justify-content-between py-2">
-                    <span>Vibration spike - Zone A</span>
-                    <span class="status-pill status-active">Resolved</span>
-                </li>
-            </ul>
-        </div>
-    </div>
+    const res = await fetch('/live-data');
+    const data = await res.json();
 
-</div>
+    // Values
+    document.getElementById('vibration').innerText = data.vibration + " m/s²";
+    document.getElementById('soil').innerText = data.soil_moisture + " %";
+    document.getElementById('tilt').innerText = data.tilt + " °";
+
+    // STATUS mapping (simple rule)
+    let vibRisk = data.vibration > 7 ? "HIGH" : "LOW";
+    let soilRisk = data.soil_moisture > 70 ? "MEDIUM" : "LOW";
+    let tiltRisk = data.tilt > 15 ? "HIGH" : "LOW";
+
+    // Vibration
+    let vibEl = document.getElementById('vibStatus');
+    vibEl.className = "status-pill " + getStatus(vibRisk);
+    vibEl.innerText = getLabel(vibRisk);
+
+    // Soil
+    let soilEl = document.getElementById('soilStatus');
+    soilEl.className = "status-pill " + getStatus(soilRisk);
+    soilEl.innerText = getLabel(soilRisk);
+
+    // Tilt
+    let tiltEl = document.getElementById('tiltStatus');
+    tiltEl.className = "status-pill " + getStatus(tiltRisk);
+    tiltEl.innerText = getLabel(tiltRisk);
+}
+
+// auto refresh
+setInterval(loadDashboardData, 3000);
+loadDashboardData();
+
+</script>
 
 @endsection
