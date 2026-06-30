@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Api\SensorDataController;
+use App\Http\Controllers\Admin\ReportController;
 
 
 
@@ -40,5 +41,9 @@ Route::middleware(['auth'])->group(function(){
   Route::get('/alerts', function () {
     return view('admin.alerts.alerts');
 })->name('alerts');
+
+    // reports route
+Route::get('/admin/reports', [ReportController::class, 'index'])
+    ->name('reports.index');
 
 require __DIR__.'/auth.php';
