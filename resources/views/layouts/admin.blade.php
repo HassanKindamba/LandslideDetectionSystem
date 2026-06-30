@@ -127,14 +127,18 @@
         /* ===== MAIN CONTENT ===== */
         .main-wrapper {
             margin-left: var(--sidebar-width);
-            transition: margin-left 0.3s ease;
+            width: calc(100% - var(--sidebar-width));
+            transition: margin-left 0.3s ease, width 0.3s ease;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
         .main-wrapper.full {
             margin-left: 0;
+            width: 100%;
         }
 
         /* ===== TOPBAR ===== */
@@ -259,7 +263,7 @@
                 🚨 View Alerts
             </a>
 
-            <a href="#" class="nav-link">
+            <a href="{{ route('reports.index') }}" class="nav-link">
                 <i class="bi bi-bar-chart-line"></i> Reports
             </a>
 
