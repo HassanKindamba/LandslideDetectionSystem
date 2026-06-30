@@ -56,6 +56,23 @@
         box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
     }
 
+    .form-control {
+        width: 100%;
+        border-radius: 10px;
+        padding: 10px 14px;
+        border: 1px solid #ced4da;
+    }
+
+    .form-control:focus {
+        border-color: var(--accent-green);
+        box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+    }
+
+        .login-card {
+        ...
+        width: 100%;
+    }
+
     .btn-success-custom {
         background-color: var(--accent-green);
         border: none;
