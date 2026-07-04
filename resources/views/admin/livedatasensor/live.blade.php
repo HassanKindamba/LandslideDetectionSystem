@@ -63,8 +63,8 @@
                 <tr>
                     <th>Time</th>
                     <th>Soil Moisture (%)</th>
-                    <th>Vibration (m/s²)</th>
-                    <th>Tilt (°)</th>
+                    <th>Vibration</th>
+                    <th>Tilt</th>
                     <th>Risk Level</th>
                 </tr>
             </thead>
@@ -73,8 +73,8 @@
                 <tr>
                     <td id="time">--</td>
                     <td id="soil">-- %</td>
-                    <td id="vibration">-- m/s²</td>
-                    <td id="tilt">-- °</td>
+                    <td id="vibration">--</td>
+                    <td id="tilt">--</td>
                     <td id="risk">--</td>
                 </tr>
             </tbody>
@@ -85,20 +85,17 @@
 
 <script>
 
-function getTime() {
-    return new Date().toLocaleTimeString();
-}
-
 async function loadData() {
     const res = await fetch('/live-data');
     const data = await res.json();
 
-    document.getElementById('time').innerText = getTime();
+    // Muda wa server (wakati data ilipohifadhiwa database)
+    document.getElementById('time').innerText = data.time;
 
-    // Values with units (display side)
+    // Values (display side) - vibration na tilt ni digital (0/1)
     document.getElementById('soil').innerText = data.soil_moisture + " %";
-    document.getElementById('vibration').innerText = data.vibration + " m/s²";
-    document.getElementById('tilt').innerText = data.tilt + " °";
+    document.getElementById('vibration').innerText = (data.vibration == 1 ? "⚠️ Detected" : "Normal");
+    document.getElementById('tilt').innerText = (data.tilt == 1 ? "⚠️ Detected" : "Normal");
 
     document.getElementById('risk').innerText = data.risk;
 
