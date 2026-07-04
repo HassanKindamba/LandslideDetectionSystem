@@ -5,14 +5,18 @@
 <div class="container mt-4">
 
     {{-- PAGE TITLE --}}
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-3 no-print">
 
         <h3 class="mb-0">Sensor Reports</h3>
+
+        <button onclick="window.print()" class="btn btn-outline-dark">
+            🖨️ Print Report
+        </button>
 
     </div>
 
     {{-- FILTER CARD --}}
-    <div class="card mb-3 shadow-sm">
+    <div class="card mb-3 shadow-sm no-print">
 
         <div class="card-body">
 
@@ -75,6 +79,13 @@
 
     </div>
 
+    {{-- PRINT HEADER (inaonekana tu wakati wa print) --}}
+    <div class="print-only mb-3">
+        <h3>Landslide Detection - Sensor Report</h3>
+        <p>Generated: {{ now()->format('d M Y H:i') }}</p>
+        <hr>
+    </div>
+
     {{-- TABLE CARD --}}
     <div class="card shadow-sm">
 
@@ -109,9 +120,21 @@
 
                             <td>{{ $report->soil_moisture }}%</td>
 
-                            <td>{{ $report->vibration }}</td>
+                            <td>
+                                @if($report->vibration == 1)
+                                    <span class="text-danger fw-bold">⚠ Detected</span>
+                                @else
+                                    Normal
+                                @endif
+                            </td>
 
-                            <td>{{ $report->tilt }}°</td>
+                            <td>
+                                @if($report->tilt == 1)
+                                    <span class="text-danger fw-bold">⚠ Detected</span>
+                                @else
+                                    Normal
+                                @endif
+                            </td>
 
                             <td>
 
@@ -159,7 +182,7 @@
 
             </div>
 
-            <div class="mt-3">
+            <div class="mt-3 no-print">
                 {{ $reports->links() }}
             </div>
 
@@ -168,5 +191,30 @@
     </div>
 
 </div>
+
+<style>
+    .print-only {
+        display: none;
+    }
+
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+
+        .print-only {
+            display: block !important;
+        }
+
+        .card {
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        body {
+            background: white !important;
+        }
+    }
+</style>
 
 @endsection
