@@ -187,14 +187,14 @@ async function loadDashboardData() {
     const data = await res.json();
 
     // Values
-    document.getElementById('vibration').innerText = data.vibration + " m/s²";
+    document.getElementById('vibration').innerText = (data.vibration == 1 ? "Detected" : "Normal");
     document.getElementById('soil').innerText = data.soil_moisture + " %";
-    document.getElementById('tilt').innerText = data.tilt + " °";
+    document.getElementById('tilt').innerText = (data.tilt == 1 ? "Detected" : "Normal");
 
-    // STATUS mapping (simple rule)
-    let vibRisk = data.vibration > 7 ? "HIGH" : "LOW";
-    let soilRisk = data.soil_moisture > 70 ? "MEDIUM" : "LOW";
-    let tiltRisk = data.tilt > 15 ? "HIGH" : "LOW";
+    // STATUS mapping - imesahihishwa kulingana na data halisi (0/1 kwa vibration na tilt)
+    let vibRisk = data.vibration == 1 ? "HIGH" : "LOW";
+    let soilRisk = data.soil_moisture > 70 ? "HIGH" : (data.soil_moisture > 50 ? "MEDIUM" : "LOW");
+    let tiltRisk = data.tilt == 1 ? "HIGH" : "LOW";
 
     // Vibration
     let vibEl = document.getElementById('vibStatus');
