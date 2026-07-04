@@ -24,28 +24,28 @@ class SensorDataController extends Controller
         ]);
     }
 
-    public function liveApi()
-    {
-        $soil = rand(40, 90);
-        $vibration = rand(1, 10);
-        $tilt = rand(5, 25);
+public function liveApi()
+{
+    $latest = SensorData::latest()->first();
 
-        if ($soil > 70 && $tilt > 15 && $vibration > 5) {
-            $risk = "HIGH";
-        } elseif ($soil > 50 || $tilt > 10) {
-            $risk = "MEDIUM";
-        } else {
-            $risk = "LOW";
-        }
-
+    if (!$latest) {
         return response()->json([
-            "soil_moisture" => $soil,
-            "vibration" => $vibration,
-            "tilt" => $tilt,
-            "risk" => $risk,
+            "soil_moisture" => 0,
+            "vibration" => 0,
+            "tilt" => 0,
+            "risk" => "LOW",
             "time" => now()->format('H:i:s')
         ]);
     }
+
+    return response()->json([
+        "soil_moisture" => $latest->soil_moisture,
+        "vibration" => $latest->vibration,
+        "tilt" => $latest->tilt,
+        "risk" => $latest->risk_level,
+        "time" => $latest->created_at->format('H:i:s')
+    ]);
+}
 
     public function store(Request $request)
     {
