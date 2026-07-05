@@ -6,11 +6,15 @@ use Illuminate\Console\Command;
 use PhpMqtt\Client\MqttClient;
 use PhpMqtt\Client\ConnectionSettings;
 use App\Models\SensorData;
+use App\Mail\HighRiskAlert;
+use Illuminate\Support\Facades\Mail;
 
 class MqttSubscribe extends Command
 {
     protected $signature = 'mqtt:listen';
     protected $description = 'Sikiliza data ya sensor kutoka ESP32 kupitia MQTT';
+
+    protected $lastRisk = null; // kukumbuka risk ya reading iliyotangulia
 
     public function handle()
     {
@@ -47,7 +51,7 @@ class MqttSubscribe extends Command
                     $risk = "LOW";
                 }
 
-                SensorData::create([
+                $sensor = SensorData::create([
                     'soil_moisture' => $soil,
                     'vibration'     => $vibration,
                     'tilt'          => $tilt,
@@ -55,6 +59,19 @@ class MqttSubscribe extends Command
                 ]);
 
                 $this->info("Imehifadhiwa database. Risk level: {$risk}");
+
+                // Tuma email TU kama risk imebadilika kutoka isiyo-HIGH kwenda HIGH
+                if ($risk === "HIGH" && $this->lastRisk !== "HIGH") {
+                    try {
+                        Mail::to('kindambahassani2023@gmail.com') // admin email address
+                            ->send(new HighRiskAlert($sensor));
+                        $this->info("📧 Email ya HIGH RISK imetumwa!");
+                    } catch (\Exception $e) {
+                        $this->error("Email imeshindikana kutumwa: " . $e->getMessage());
+                    }
+                }
+
+                $this->lastRisk = $risk;
             } else {
                 $this->error('JSON haikusomeka vizuri.');
             }
