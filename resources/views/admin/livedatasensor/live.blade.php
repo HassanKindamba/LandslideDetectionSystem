@@ -8,7 +8,7 @@
 
     <style>
         body {
-            font-family: Arial;
+            font-family: Arial, sans-serif;
             background: #f4f4f4;
         }
 
@@ -39,21 +39,24 @@
         }
 
         .high {
-            background: red;
+            background: #dc3545;
             color: white;
             font-weight: bold;
+            border-radius: 5px;
         }
 
         .medium {
-            background: orange;
-            color: white;
+            background: #ffc107;
+            color: #212529;
             font-weight: bold;
+            border-radius: 5px;
         }
 
         .low {
-            background: green;
+            background: #198754;
             color: white;
             font-weight: bold;
+            border-radius: 5px;
         }
     </style>
 
@@ -64,18 +67,18 @@
                     <th>Time</th>
                     <th>Soil Moisture (%)</th>
                     <th>Vibration</th>
-                    <th>Tilt</th>
+                    <th>Tilt Angle</th>
                     <th>Risk Level</th>
                 </tr>
             </thead>
 
             <tbody>
                 <tr>
-                    <td id="time">--</td>
+                    <td id="time">--:--:--</td>
                     <td id="soil">-- %</td>
                     <td id="vibration">--</td>
                     <td id="tilt">--</td>
-                    <td id="risk">--</td>
+                    <td><span id="risk" style="padding: 6px 12px; display: inline-block;">--</span></td>
                 </tr>
             </tbody>
         </table>
@@ -86,29 +89,51 @@
 <script>
 
 async function loadData() {
-    const res = await fetch('/live-data');
-    const data = await res.json();
+    try {
+        // Kuomba data kutoka live-api na kuzuia cache kwa kutumia timestamp (?t=)
+        const res = await fetch('/api/live-api?t=' + new Date().getTime(), {
+            cache: 'no-store'
+        });
+        const data = await res.json();
 
-    // Muda wa server (wakati data ilipohifadhiwa database)
-    document.getElementById('time').innerText = data.time;
+        if (data) {
+            // Muda
+            document.getElementById('time').innerText = data.time ?? '--:--:--';
 
-    // Values (display side) - vibration na tilt ni digital (0/1)
-    document.getElementById('soil').innerText = data.soil_moisture + " %";
-    document.getElementById('vibration').innerText = (data.vibration == 1 ? "⚠️ Detected" : "Normal");
-    document.getElementById('tilt').innerText = (data.tilt == 1 ? "⚠️ Detected" : "Normal");
+            // Values Conversions
+            let soilValue = parseFloat(data.soil_moisture ?? 0);
+            let vibValue  = parseFloat(data.vibration ?? 0);
+            let tiltValue = parseFloat(data.tilt ?? 0);
 
-    document.getElementById('risk').innerText = data.risk;
+            // Kuweka values kwenye database table
+            document.getElementById('soil').innerText = soilValue.toFixed(1) + " %";
+            document.getElementById('vibration').innerText = vibValue > 0.05 ? vibValue.toFixed(3) : "0.000";
+            document.getElementById('tilt').innerText = tiltValue.toFixed(1) + " °";
 
-    let riskCell = document.getElementById('risk');
-    riskCell.className = "";
+            // Risk Level Styling
+            let riskCell = document.getElementById('risk');
+            let currentRisk = (data.risk || data.risk_level || 'LOW').toUpperCase();
+            
+            riskCell.innerText = currentRisk;
+            riskCell.className = ""; // Futa class za zamani
 
-    if (data.risk === "HIGH") riskCell.classList.add("high");
-    else if (data.risk === "MEDIUM") riskCell.classList.add("medium");
-    else riskCell.classList.add("low");
+            if (currentRisk === "HIGH") {
+                riskCell.classList.add("high");
+            } else if (currentRisk === "MEDIUM") {
+                riskCell.classList.add("medium");
+            } else {
+                riskCell.classList.add("low");
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching live data:", error);
+    }
 }
 
-// auto refresh every 4 seconds
-setInterval(loadData, 4000);
+// Refresh kila baada ya sekunde 0.5 (500 ms)
+setInterval(loadData, 500);
+
+// On-load initial call
 loadData();
 
 </script>
