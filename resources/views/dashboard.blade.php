@@ -182,38 +182,49 @@ function getLabel(risk) {
 }
 
 async function loadDashboardData() {
+    try {
+        // kuvuta data kutoka kwenye API.
+        const res = await fetch('/api/live-api');
+        const data = await res.json();
 
-    const res = await fetch('/live-data');
-    const data = await res.json();
+        if (data) {
+            // Parse numerical values safely
+            let vibValue = parseFloat(data.vibration || 0);
+            let soilValue = parseFloat(data.soil_moisture || 0);
+            let tiltValue = parseFloat(data.tilt || 0);
 
-    // Values
-    document.getElementById('vibration').innerText = (data.vibration == 1 ? "Detected" : "Normal");
-    document.getElementById('soil').innerText = data.soil_moisture + " %";
-    document.getElementById('tilt').innerText = (data.tilt == 1 ? "Detected" : "Normal");
+            // Display raw numerical readings
+            document.getElementById('vibration').innerText = vibValue > 0.1 ? vibValue.toFixed(3) : "Normal";
+            document.getElementById('soil').innerText = soilValue.toFixed(1) + " %";
+            document.getElementById('tilt').innerText = tiltValue.toFixed(1) + " °";
 
-    // STATUS mapping - imesahihishwa kulingana na data halisi (0/1 kwa vibration na tilt)
-    let vibRisk = data.vibration == 1 ? "HIGH" : "LOW";
-    let soilRisk = data.soil_moisture > 70 ? "HIGH" : (data.soil_moisture > 50 ? "MEDIUM" : "LOW");
-    let tiltRisk = data.tilt == 1 ? "HIGH" : "LOW";
+            // Status mappings according to exact thresholds
+            let vibRisk = vibValue >= 1.5 ? "HIGH" : (vibValue >= 0.5 ? "MEDIUM" : "LOW");
+            let soilRisk = soilValue >= 70 ? "HIGH" : (soilValue >= 40 ? "MEDIUM" : "LOW");
+            let tiltRisk = tiltValue >= 30.0 ? "HIGH" : (tiltValue >= 15.0 ? "MEDIUM" : "LOW");
 
-    // Vibration
-    let vibEl = document.getElementById('vibStatus');
-    vibEl.className = "status-pill " + getStatus(vibRisk);
-    vibEl.innerText = getLabel(vibRisk);
+            //  Vibration UI Badge
+            let vibEl = document.getElementById('vibStatus');
+            vibEl.className = "status-pill " + getStatus(vibRisk);
+            vibEl.innerText = getLabel(vibRisk);
 
-    // Soil
-    let soilEl = document.getElementById('soilStatus');
-    soilEl.className = "status-pill " + getStatus(soilRisk);
-    soilEl.innerText = getLabel(soilRisk);
+            //  Soil Moisture UI Badge
+            let soilEl = document.getElementById('soilStatus');
+            soilEl.className = "status-pill " + getStatus(soilRisk);
+            soilEl.innerText = getLabel(soilRisk);
 
-    // Tilt
-    let tiltEl = document.getElementById('tiltStatus');
-    tiltEl.className = "status-pill " + getStatus(tiltRisk);
-    tiltEl.innerText = getLabel(tiltRisk);
+            //  Tilt Sensor UI Badge
+            let tiltEl = document.getElementById('tiltStatus');
+            tiltEl.className = "status-pill " + getStatus(tiltRisk);
+            tiltEl.innerText = getLabel(tiltRisk);
+        }
+    } catch (error) {
+        console.error("Error fetching live sensor data:", error);
+    }
 }
 
-// auto refresh
-setInterval(loadDashboardData, 3000);
+// Auto refresh internal polling every 0.5 seconds (matching ESP32 output frequency)
+setInterval(loadDashboardData, 500);
 loadDashboardData();
 
 </script>
