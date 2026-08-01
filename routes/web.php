@@ -36,7 +36,10 @@ Route::middleware(['auth'])->group(function(){
 
 // sensor data routes
 Route::get('/live', [SensorDataController::class, 'live'])->name('live.data');
-Route::get('/live-data', [SensorDataController::class, 'liveApi']);
+Route::get('/api/live-api', [SensorDataController::class, 'liveApi']);
+
+// ROUTE YA POST KWA AJILI YA ESP32:
+Route::post('/api/sensor-data', [SensorDataController::class, 'store']);
 
 // alerts route
 Route::get('/alerts', function () {
