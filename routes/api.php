@@ -8,11 +8,6 @@ use App\Http\Controllers\Api\SensorDataController;
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you may register API routes for your application.
-| These routes are loaded by the RouteServiceProvider and all of them
-| will be assigned to the "api" middleware group.
-|
 */
 
 // Test route (optional)
@@ -22,12 +17,13 @@ Route::get('/test', function () {
     ]);
 });
 
-// Sensor Data API
+// 1. ESP32 POST Request -> URL: http://192.168.43.11:8000/api/sensor-data
 Route::post('/sensor-data', [SensorDataController::class, 'store']);
 
-// Authenticated user (optional - default Laravel)
+// 2. Dashboard Live Fetch -> URL: http://127.0.0.1:8000/api/live-api
+Route::get('/live-api', [SensorDataController::class, 'liveApi']);
+
+// Authenticated user (optional)
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::get('/live-api', [SensorDataController::class, 'liveApi']);
